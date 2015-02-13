@@ -54,6 +54,7 @@ public class EpsAnalyzer {
 	 * Must return:
 	 * - EPS mark/conclusion: sigma/median delta.
 	 * - EPS Growth Rate: calculated if EPS Mark is satisfactory.
+	 * plus find out constants/thresholds.
 	 */
 	//TODO: implement this logic with appropriate constants
 	public int analyze(List<CompanyAnnualData> data){
