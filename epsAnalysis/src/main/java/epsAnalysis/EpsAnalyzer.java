@@ -50,6 +50,19 @@ public class EpsAnalyzer {
 		return deltas;
 	};
 	
+	private final double EPS_EXCELLENT = 95;
+	private final double EPS_GOOD = 80;
+	private final double EPS_MEDIOCRE = 60;
+	
+	private final double DELTAS_EXCELLENT = 95.0;
+	private final double DELTAS_GOOD = 70.0;
+	private final double DELTAS_MEDIOCRE = 50.0;
+	
+	// This is the subject to change easily:
+	private final double SIGMA_EXCELLENT = 2.05;
+	private final double SIGMA_GOOD = 10.0;
+	private final double SIGMA_MEDIOCRE = 30.00;
+	
 	/*
 	 * Must return:
 	 * - EPS mark/conclusion: sigma/median delta.
@@ -57,12 +70,27 @@ public class EpsAnalyzer {
 	 * plus find out constants/thresholds.
 	 */
 	//TODO: implement this logic with appropriate constants
-	public int analyze(List<CompanyAnnualData> data){
+	public EpsAnalysisResult analyze(List<CompanyAnnualData> data){
+		EpsAnalysisResult result = new EpsAnalysisResult();
 		
 		System.out.println("Analysis for " + data.get(0).getTicker());
 		
 		double percentPositiveEPS = getPercentageOfPositiveEPS(data);
 		System.out.println("% of positive EPS is " + percentPositiveEPS);
+		
+		if(percentPositiveEPS >= EPS_EXCELLENT){
+			result.setEpsMark(EpsEvalResult.EXCELLENT);
+		}
+		else if(percentPositiveEPS >= EPS_GOOD){
+			result.setEpsMark(EpsEvalResult.GOOD);
+		}
+		else if(percentPositiveEPS >= EPS_MEDIOCRE){
+			result.setEpsMark(EpsEvalResult.MEDIOCRE);
+		}
+		else{
+			result.setEpsMark(EpsEvalResult.BAD);
+			return result;
+		}
 		
 		List<DeltaEps> deltas = calcDeltas(data);
 		
@@ -73,6 +101,22 @@ public class EpsAnalyzer {
 		
 		double percentPositiveDeltas = getPercentageOfPositiveDeltas(deltas);
 		System.out.println("% of Positive Deltas is " + percentPositiveDeltas);
+		
+		if(percentPositiveDeltas >= DELTAS_EXCELLENT){
+			result.setEpsMark(EpsEvalResult.EXCELLENT);
+		}
+		else if(percentPositiveDeltas >= DELTAS_GOOD){
+			result.setEpsMark(EpsEvalResult.GOOD);
+		}
+		else if(percentPositiveDeltas >= DELTAS_MEDIOCRE){
+			result.setEpsMark(EpsEvalResult.MEDIOCRE);
+		}
+		else{
+			result.setEpsMark(EpsEvalResult.BAD);
+			return result;
+		}
+		
+		System.out.println("So far result is " + result.getEpsMark());
 		
 		double mean = StatisticHelper.getSmartMedian(x);
 		System.out.println("Median is " + mean);
@@ -89,7 +133,7 @@ public class EpsAnalyzer {
 		double myEPSMetric = standardDeviation / mean;
 		System.out.println("FINAL EPS CONCLUSION is " + myEPSMetric);
 		
-		return 0;
+		return result;
 	}
 	
 	public double getPercentageOfPositiveEPS(List<CompanyAnnualData> data){
