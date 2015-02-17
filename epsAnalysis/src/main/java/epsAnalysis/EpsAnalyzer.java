@@ -54,14 +54,14 @@ public class EpsAnalyzer {
 	private final double EPS_GOOD = 80;
 	private final double EPS_MEDIOCRE = 60;
 	
-	private final double DELTAS_EXCELLENT = 95.0;
-	private final double DELTAS_GOOD = 70.0;
-	private final double DELTAS_MEDIOCRE = 50.0;
+	private final double DELTAS_EXCELLENT = 80.0;
+	private final double DELTAS_GOOD = 50.0;
+	private final double DELTAS_MEDIOCRE = 25.0;
 	
 	// This is the subject to change easily:
 	private final double SIGMA_EXCELLENT = 2.05;
-	private final double SIGMA_GOOD = 10.0;
-	private final double SIGMA_MEDIOCRE = 30.00;
+	private final double SIGMA_GOOD = 20.00;		// TODO: loosen this
+	private final double SIGMA_MEDIOCRE = 50.00;	// TODO: loosen this.
 	
 	/*
 	 * Must return:
@@ -69,12 +69,18 @@ public class EpsAnalyzer {
 	 * - EPS Growth Rate: calculated if EPS Mark is satisfactory.
 	 * plus find out constants/thresholds.
 	 */
-	//TODO: implement this logic with appropriate constants
 	public EpsAnalysisResult analyze(List<CompanyAnnualData> data){
+		// Sanity checks.
+		if(data == null){
+			return null;
+		}
+		
+		
 		EpsAnalysisResult result = new EpsAnalysisResult();
 		
 		System.out.println("Analysis for " + data.get(0).getTicker());
 		
+		// EPS - how many positive values.
 		double percentPositiveEPS = getPercentageOfPositiveEPS(data);
 		System.out.println("% of positive EPS is " + percentPositiveEPS);
 		
@@ -99,6 +105,7 @@ public class EpsAnalyzer {
 			x.add(dt.getDelta());
 		}
 		
+		// Deltas - how many positive deltas.
 		double percentPositiveDeltas = getPercentageOfPositiveDeltas(deltas);
 		System.out.println("% of Positive Deltas is " + percentPositiveDeltas);
 		
@@ -120,6 +127,7 @@ public class EpsAnalyzer {
 		
 		double mean = StatisticHelper.getSmartMedian(x);
 		System.out.println("Median is " + mean);
+		//TODO: investigate what happens with Bombardier - somehow sigma went to perfect range.
 		
 		double variance = StatisticHelper.getSmartVariance(x);
 		System.out.println("Variance is " + variance);
@@ -133,7 +141,66 @@ public class EpsAnalyzer {
 		double myEPSMetric = standardDeviation / mean;
 		System.out.println("FINAL EPS CONCLUSION is " + myEPSMetric);
 		
+		if(myEPSMetric <= SIGMA_EXCELLENT){
+			result.setEpsMark(EpsEvalResult.EXCELLENT);
+		}
+		else if(myEPSMetric <= SIGMA_GOOD){
+			result.setEpsMark(EpsEvalResult.GOOD);
+		}
+		else if(myEPSMetric <= SIGMA_MEDIOCRE){
+			result.setEpsMark(EpsEvalResult.MEDIOCRE);
+		}
+		else{
+			result.setEpsMark(EpsEvalResult.BAD);
+			return result;
+		}
+		
+		result.setEpsGrowthRate(getEpsGrowthRate(data));
+		
 		return result;
+	}
+	
+	public Double getEpsGrowthRate(List<CompanyAnnualData> data){
+		// Sanity checks
+		if(data == null) return null;
+		if(data.size() <= 5) return null;
+		
+		// Getting rid of extreme values
+		double max = Double.MIN_VALUE;
+		double min = Double.MAX_VALUE;
+		int maxIndex = -1, minIndex = -1;
+		
+		for(int i = 0; i < data.size(); i++){
+			if(max <= data.get(i).getEps()){
+				maxIndex = i;
+				max = data.get(i).getEps();
+			}
+			
+			if(min >= data.get(i).getEps()){
+				minIndex = i;
+				min = data.get(i).getEps();
+			}
+		}
+		
+		List<CompanyAnnualData> res = new ArrayList<CompanyAnnualData>();
+		for(int i = 0; i < data.size(); i++){
+			if(i == maxIndex || i == minIndex) continue;
+			res.add(data.get(i));
+		}
+		
+		// Now we have a refined array.
+		// Sort it by year desc.
+		Collections.sort(res);
+		
+		CompanyAnnualData firstYearData = res.get(res.size() - 1);
+		CompanyAnnualData lastYearData = res.get(0);
+		
+		if(lastYearData.getEps() <= 0.0 || firstYearData.getEps() <= 0.0) return null;
+		double div = lastYearData.getEps() / firstYearData.getEps();
+		double result = Math.pow(div, 1.0 / (res.size() - 1));
+		
+		System.out.println("EPS Growth Rate, %: " + 100*(result - 1));
+		return result - 1;
 	}
 	
 	public double getPercentageOfPositiveEPS(List<CompanyAnnualData> data){

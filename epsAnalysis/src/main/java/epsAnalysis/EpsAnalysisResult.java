@@ -25,4 +25,23 @@ public class EpsAnalysisResult {
 	
 	private EpsEvalResult epsMark;
 	private Double epsGrowthRate;
+	
+	//TODO: maybe, move constants out.
+	public double getFinalScore(){
+		boolean epsGrows = (epsGrowthRate != null) && (epsGrowthRate.doubleValue() >= 0.019);
+		if(!epsGrows) return 0.0;
+		
+		double result = 0.0;
+		if(epsMark.equals(EpsEvalResult.EXCELLENT)){
+			result = 1.0;
+		}
+		else if(epsMark.equals(EpsEvalResult.GOOD)){
+			result = 0.9;
+		}
+		else if(epsMark.equals(EpsEvalResult.MEDIOCRE)){
+			result = 0.5;
+		}
+		
+		return result;
+	}
 }
