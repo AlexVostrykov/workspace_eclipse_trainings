@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import common.DataExtractor;
+
 import statisticHelpers.StatisticHelper;
 
 public class EpsAnalyzer {
@@ -138,7 +140,7 @@ public class EpsAnalyzer {
 //		double avg = StatisticHelper.getSmartAverage(x, true);
 //		System.out.println("Smart Avg is " + avg);
 		
-		double myEPSMetric = standardDeviation / mean;
+		double myEPSMetric = Math.abs(standardDeviation / mean);
 		System.out.println("FINAL EPS CONCLUSION is " + myEPSMetric);
 		
 		if(myEPSMetric <= SIGMA_EXCELLENT){
@@ -205,16 +207,15 @@ public class EpsAnalyzer {
 	
 	public double getPercentageOfPositiveEPS(List<CompanyAnnualData> data){
 		
-		//TODO: automate this process of getting an array of values
-		List<Double> x = new ArrayList<Double>();
-		for (CompanyAnnualData dt : data) {
-			x.add(dt.getEps());
-		}
+		//TODO: plug-in DataExtractor for this...
+		List<Double> x = DataExtractor.extractDoubles(data, "getEps");
 		
 		return StatisticHelper.getPercentageOfPositiveValues(x);
 	}
 	
 	public double getPercentageOfPositiveDeltas(List<DeltaEps> deltas){
+		//
+		//TODO: plug-in DataExtractor for this...
 		List<Double> x = new ArrayList<Double>();
 		for (DeltaEps dt : deltas) {
 			x.add(dt.getDelta());

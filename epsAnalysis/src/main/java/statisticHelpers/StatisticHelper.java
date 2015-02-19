@@ -7,7 +7,11 @@ import java.util.List;
 
 public class StatisticHelper {
 	
-	private static List<Double> getRidOfExtremes(List<Double> data){
+	public static List<Double> getRidOfExtremes(List<Double> data){
+		// Sanity checks.
+		if(data == null) return null;
+		if(data.size() == 0) return null;
+		
 		// Step 1: define max + min.
 		double max, min;
 		max = Double.MIN_VALUE;
@@ -108,12 +112,13 @@ public class StatisticHelper {
 		return variance;
 	}
 
-
 	public static double getPercentageOfPositiveValues(List<Double> x) {
+		if(x == null || x.size() == 0) return 0.0;
+		
 		double result = 0;
 		
 		for (Double d : x) {
-			result += (d > 0) ? 1 : 0;
+			result += (d != null && d > 0) ? 1 : 0;
 		}
 		
 		return 100.0* result / x.size();
