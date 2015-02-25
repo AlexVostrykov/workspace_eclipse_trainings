@@ -1,9 +1,13 @@
 package epsAnalysis;
 
-public class EpsAnalysisResult {
+import common.AnalysisResult;
+
+public class EpsAnalysisResult implements AnalysisResult{
+	
 	public EpsEvalResult getEpsMark() {
 		return epsMark;
 	}
+	
 	public void setEpsMark(EpsEvalResult _epsMark) {
 		if(this.epsMark == null){
 			this.epsMark = _epsMark;
@@ -27,7 +31,7 @@ public class EpsAnalysisResult {
 	private Double epsGrowthRate;
 	
 	//TODO: maybe, move constants out.
-	public double getFinalScore(){
+	public Double getFinalScore(){
 		boolean epsGrows = (epsGrowthRate != null) && (epsGrowthRate.doubleValue() >= 0.019);
 		if(!epsGrows) return 0.0;
 		

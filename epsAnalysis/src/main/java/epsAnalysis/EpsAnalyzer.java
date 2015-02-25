@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import common.DataExtractor;
-
+import common.FundamentalCriterionAnalyzer;
 import statisticHelpers.StatisticHelper;
 
-public class EpsAnalyzer {
+public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 	
 	private class DeltaEps{
 		private int year;

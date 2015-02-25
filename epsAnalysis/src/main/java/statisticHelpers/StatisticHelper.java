@@ -112,6 +112,12 @@ public class StatisticHelper {
 		return variance;
 	}
 
+	/**
+	 * Returns the percentage (70.0, 80.0 etc., not the fraction) of positive values
+	 * in the given list.
+	 * @param x	list of double values. NaNs and nulls are permitted. And treated as non-positive ones.
+	 * @return 0.0 to 100.0 number of positive values percentage.
+	 */
 	public static double getPercentageOfPositiveValues(List<Double> x) {
 		if(x == null || x.size() == 0) return 0.0;
 		

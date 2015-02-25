@@ -27,15 +27,61 @@ public class MainClass {
      * AYA, HEINY, ALL, MCY, PGR
     */
     private static final String TICKER = "PGR";
+    
+    private static String[] TICKERS = {"CCE", "BP", "MAT",
+    	"HOG", "NG", "MCD", "PFE", "BBD.B", "ERF",
+    	"TAC",
+    	"T",
+    	"UL",
+    	"ADP",
+    	"JNJ",
+    	"PG",
+    	"SO",
+    	"HD",
+    	"MON",
+    	"PSEC",
+    	"AB",
+    	"CAG",
+    	"WU",
+    	"VGR",
+    	"BUD",
+    	"LTS",
+    	"GII.UN",
+    	"AGNC",
+    	"SCU",
+    	"M",
+    	"BB",
+    	"GM",
+    	"RGSE",
+    	"TOT",
+    	"GE",
+    	"VALU",
+    	"AV",
+    	"TSLA",
+    	"F",
+    	"VLKAY",
+    	"HMC",
+    	"BAMXF",
+    	"NSANY",
+    	"TM",
+    	"AYA",
+    	"HEINY",
+    	"ALL",
+    	"MCY",
+    	"PGR"};
 	
 	public static void main(String[] args) {
-		System.out.println("Analyzing: " + TICKER);
 		
-		List<CompanyAnnualData> x = TestDataProvider.getTestDataByTicker(TICKER);
+		int tickerIndex = 47;
+		String ticker= TICKERS[tickerIndex];
+		
+		System.out.println("Analyzing: " + ticker);
+		
+		List<CompanyAnnualData> x = TestDataProvider.getTestDataByTicker(ticker);
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		System.out.println(a.analyze(x).getFinalScore());
+		System.out.println("final score is " + a.analyze(x).getFinalScore());
 		
 		/*
 		
