@@ -62,10 +62,10 @@ public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 	
 	// This is the subject to change easily:
 	private final double SIGMA_EXCELLENT = 2.05;
-	private final double SIGMA_GOOD = 20.00;		// TODO: loosen this
-	private final double SIGMA_MEDIOCRE = 50.00;	// TODO: loosen this.
+	private final double SIGMA_GOOD = 20.00;
+	private final double SIGMA_MEDIOCRE = 50.00;
 	
-	/*
+	/**
 	 * Must return:
 	 * - EPS mark/conclusion: sigma/median delta.
 	 * - EPS Growth Rate: calculated if EPS Mark is satisfactory.
@@ -129,7 +129,6 @@ public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 		
 		double mean = StatisticHelper.getSmartMedian(x);
 		System.out.println("Median is " + mean);
-		//TODO: investigate what happens with Bombardier - somehow sigma went to perfect range.
 		
 		double variance = StatisticHelper.getSmartVariance(x);
 		System.out.println("Variance is " + variance);
@@ -206,8 +205,6 @@ public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 	}
 	
 	public double getPercentageOfPositiveEPS(List<CompanyAnnualData> data){
-		
-		//TODO: plug-in DataExtractor for this...
 		List<Double> x = DataExtractor.extractDoubles(data, "getEps");
 		
 		return StatisticHelper.getPercentageOfPositiveValues(x);
@@ -220,6 +217,8 @@ public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 		for (DeltaEps dt : deltas) {
 			x.add(dt.getDelta());
 		}
+		
+		
 		
 		return  StatisticHelper.getPercentageOfPositiveValues(x);
 	}

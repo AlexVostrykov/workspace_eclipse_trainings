@@ -3,8 +3,7 @@ package fundamentalAnalysisTests;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import buybacksAnalysis.BuybackAnalysisResult;
@@ -13,6 +12,8 @@ import epsAnalysis.CompanyAnnualData;
 import testdata.TestDataProvider;
 
 public class BuybackAnalyzerTest {
+	
+	private final double COMPARISON_DELTA = 0.0;
 
 	/*
 	 * Testing BuybackAnalyzer.analyze
@@ -27,7 +28,9 @@ public class BuybackAnalyzerTest {
 		
 		Double finalScore = a.analyze(x).getFinalScore();
 		
-		Assert.assertEquals(finalScore, BuybackAnalysisResult.ISSUES_NEW);
+		Assert.assertNotNull(finalScore);
+		
+		Assert.assertEquals(finalScore.doubleValue(), BuybackAnalysisResult.ISSUES_NEW, COMPARISON_DELTA);
 	}
 	
 	// Normal case - Sweetest/Best ever company.
@@ -37,7 +40,9 @@ public class BuybackAnalyzerTest {
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		Assert.assertEquals(a.analyze(x).getFinalScore(), 1.0);
+		Double finalScore = a.analyze(x).getFinalScore();
+		
+		Assert.assertEquals(finalScore.doubleValue(), BuybackAnalysisResult.BUYS_BACK_SERIOSLY, COMPARISON_DELTA);
 	}
 	
 	// Normal case - TSLA, 2014 - deep shit company.
@@ -47,18 +52,19 @@ public class BuybackAnalyzerTest {
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		Assert.assertEquals(a.analyze(x).getFinalScore(), 0.0);
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), BuybackAnalysisResult.ISSUES_NEW, COMPARISON_DELTA);
 	}
-	
-	//TODO: rewrite with something more durable. No data about shares.
-//	@Test
-//	public void testAnalyze4(){
-//		List<CompanyAnnualData> x = TestDataProvider.getTestDataByTicker("AV");
-//		
-//		BuybackAnalyzer a = new BuybackAnalyzer();
-//		
-//		Assert.assertEquals(a.analyze(x).getFinalScore(), 0.0);
-//	}
+
+	@Test
+	public void testAnalyze4(){
+		List<CompanyAnnualData> x = new ArrayList<CompanyAnnualData>(2);
+		x.add(null);
+		x.add(new CompanyAnnualData(2008, .17, "SHT", 10L));
+		
+		BuybackAnalyzer a = new BuybackAnalyzer();
+		
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), Double.NaN, COMPARISON_DELTA);
+	}
 	
 	// Normal case - exactly 80 percent of data are declining.
 	@Test
@@ -67,7 +73,7 @@ public class BuybackAnalyzerTest {
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		Assert.assertEquals(a.analyze(x).getFinalScore(), BuybackAnalysisResult.BUYS_BACK_SERIOSLY);
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), BuybackAnalysisResult.BUYS_BACK_SERIOSLY, COMPARISON_DELTA);
 	}
 	
 	// Normal case - less than 80 percent of data are declining.
@@ -77,7 +83,7 @@ public class BuybackAnalyzerTest {
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		Assert.assertEquals(a.analyze(x).getFinalScore(), BuybackAnalysisResult.BUYS_BACK);
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), BuybackAnalysisResult.BUYS_BACK, COMPARISON_DELTA);
 	}
 	
 	// Normal case - less than 80 percent of data are declining.
@@ -87,6 +93,30 @@ public class BuybackAnalyzerTest {
 		
 		BuybackAnalyzer a = new BuybackAnalyzer();
 		
-		Assert.assertEquals(a.analyze(x).getFinalScore(), BuybackAnalysisResult.CONSTANT);
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), BuybackAnalysisResult.CONSTANT, COMPARISON_DELTA);
+	}
+	
+	@Test
+	public void testAnalyze8(){
+		List<CompanyAnnualData> x = new ArrayList<CompanyAnnualData>(2);
+		x.add(new CompanyAnnualData(2008, .17, "SHT", 10L));
+		// should be UNKNOWN, because too few data.
+		
+		BuybackAnalyzer a = new BuybackAnalyzer();
+		
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), Double.NaN, COMPARISON_DELTA);
+	}
+	
+	@Test
+	public void testAnalyze9(){
+		List<CompanyAnnualData> x = new ArrayList<CompanyAnnualData>(3);
+		x.add(new CompanyAnnualData(2008, .17, "SHT", 10L));
+		x.add(new CompanyAnnualData(2007, 2.0, "SHT"));
+		x.add(new CompanyAnnualData(2006, .02, "SHT"));
+		// should be UNKNOWN, because too few data.
+		
+		BuybackAnalyzer a = new BuybackAnalyzer();
+		
+		Assert.assertEquals(a.analyze(x).getFinalScore().doubleValue(), Double.NaN, COMPARISON_DELTA);
 	}
 }

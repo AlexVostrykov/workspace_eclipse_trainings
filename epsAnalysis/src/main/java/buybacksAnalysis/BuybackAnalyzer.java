@@ -3,17 +3,13 @@ package buybacksAnalysis;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import common.FundamentalCriterionAnalyzer;
 
 import statisticHelpers.StatisticHelper;
 import epsAnalysis.CompanyAnnualData;
 
-//TODO: manually test it on different companies from the test data list. Think on constants more...
 //TODO: create sanity convention about analyzers.
 //  Either throw exception or return null.
-//TODO - test on BUD - get rid of nulls first... How many of them you are allowed to kill and still have
-// meaningful statistics? debug + add a unit test.
 public class BuybackAnalyzer implements FundamentalCriterionAnalyzer{
 
 	// if company buys back seriously, at least 70% of deltas must be negative.
