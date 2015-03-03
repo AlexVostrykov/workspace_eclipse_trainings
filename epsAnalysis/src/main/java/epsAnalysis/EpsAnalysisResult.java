@@ -29,23 +29,29 @@ public class EpsAnalysisResult implements AnalysisResult{
 	
 	private EpsEvalResult epsMark;
 	private Double epsGrowthRate;
-	
-	//TODO: maybe, move constants out.
+
 	public Double getFinalScore(){
+		if(EpsEvalResult.UNKNOWN.equals(epsMark)) return Double.NaN;
+		
 		boolean epsGrows = (epsGrowthRate != null) && (epsGrowthRate.doubleValue() >= 0.019);
-		if(!epsGrows) return 0.0;
+		if(!epsGrows) return BAD;
 		
 		double result = 0.0;
 		if(epsMark.equals(EpsEvalResult.EXCELLENT)){
-			result = 1.0;
+			result = EXCELLENT;
 		}
 		else if(epsMark.equals(EpsEvalResult.GOOD)){
-			result = 0.9;
+			result = GOOD;
 		}
 		else if(epsMark.equals(EpsEvalResult.MEDIOCRE)){
-			result = 0.5;
+			result = MEDIOCRE;
 		}
 		
 		return result;
 	}
+	
+	public static final double BAD = 0.0;
+	public static final double MEDIOCRE = 0.5;
+	public static final double GOOD = 0.9;
+	public static final double EXCELLENT = 1.0;
 }

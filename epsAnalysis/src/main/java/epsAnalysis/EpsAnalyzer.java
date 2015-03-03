@@ -2,9 +2,7 @@ package epsAnalysis;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-
 import common.DataExtractor;
 import common.FundamentalCriterionAnalyzer;
 import statisticHelpers.StatisticHelper;
@@ -72,13 +70,13 @@ public class EpsAnalyzer implements FundamentalCriterionAnalyzer{
 	 * plus find out constants/thresholds.
 	 */
 	public EpsAnalysisResult analyze(List<CompanyAnnualData> data){
+		EpsAnalysisResult result = new EpsAnalysisResult();
+		
 		// Sanity checks.
 		if(data == null){
-			return null;
+			result.setEpsMark(EpsEvalResult.UNKNOWN);
+			return result;
 		}
-		
-		
-		EpsAnalysisResult result = new EpsAnalysisResult();
 		
 		System.out.println("Analysis for " + data.get(0).getTicker());
 		

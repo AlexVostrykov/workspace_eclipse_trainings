@@ -4,7 +4,8 @@ public enum EpsEvalResult {
 	EXCELLENT(0),
 	GOOD(1),
 	MEDIOCRE(2),
-	BAD(3);
+	BAD(3),
+	UNKNOWN(4);
 	
 	private int value;
 	

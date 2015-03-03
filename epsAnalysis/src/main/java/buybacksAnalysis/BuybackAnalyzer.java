@@ -8,8 +8,6 @@ import common.FundamentalCriterionAnalyzer;
 import statisticHelpers.StatisticHelper;
 import epsAnalysis.CompanyAnnualData;
 
-//TODO: create sanity convention about analyzers.
-//  Either throw exception or return null.
 public class BuybackAnalyzer implements FundamentalCriterionAnalyzer{
 
 	// if company buys back seriously, at least 70% of deltas must be negative.
